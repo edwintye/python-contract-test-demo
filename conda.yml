@@ -1,0 +1,6 @@
+name: python-contract-test-demo
+dependencies:
+  - python==3.8.5
+  - pip
+  - pip:
+      - -r file:test-requirements.txt
