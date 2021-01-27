@@ -40,7 +40,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest -v --cov demo --cov-report xml:cov.xml --junitxml=pytest-junit.xml
+          pytest -v --cov demo --cov-report xml --junitxml=pytest-junit.xml
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -61,3 +61,11 @@ jobs:
       - name: Contract test
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
         run: npm test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          env_vars: OS,PYTHON
+          verbose: true
