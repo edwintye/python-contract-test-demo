@@ -1,10 +1,8 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  # Triggers the workflow on push for all branches or pull request events but only for the main branch
   push:
   pull_request:
     branches: [ main ]
@@ -14,11 +12,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8, 3.9]
+        node-version: [14.10]
 
     steps:
       - uses: actions/checkout@v2
@@ -43,3 +41,23 @@ jobs:
       - name: Test with pytest
         run: |
           pytest -v --cov demo --cov-report xml:cov.xml --junitxml=pytest-junit.xml
+
+      # in conjunction with the 'on' trigger condition this will only run whenever main branch is involved
+      #        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Contract test
+        run: npm test
