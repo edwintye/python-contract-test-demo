@@ -1,0 +1,19 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "This is a demo of contract test",
+  "keywords": [
+    "test"
+  ],
+  "author": {
+    "email": "edwin.tye@gmail.com",
+    "name": "Edwin Tye"
+  },
+  "scripts": {
+    "test": "dredd --config ./api/dredd.yml"
+  },
+  "devDependencies": {
+    "dredd": "13.1.2"
+  }
+}
