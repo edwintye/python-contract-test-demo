@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Demo
+  version: 0.0.1
+paths:
+  /healthz:
+    get:
+      operationId: get_health
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                  - msg
+                properties:
+                  msg:
+                    type: string
+                    example: "Healthy"
+          description: Successful Response
+      summary: Get Health
+  /items/{item_id}:
+    delete:
+      operationId: remove_item
+      parameters:
+        - $ref: '#/components/parameters/item_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPNotFoundError'
+          description: Not Found Error
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Remove Item
+    get:
+      operationId: read_item
+      parameters:
+        - $ref: '#/components/parameters/item_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPNotFoundError'
+          description: Not Found Error
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Read Item
+    put:
+      operationId: create_item
+      parameters:
+        - $ref: '#/components/parameters/item_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPConflictError'
+          description: Conflict Error
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create Item
+components:
+  parameters:
+    item_id:
+      name: item_id
+      in: path
+      required: true
+      example: 123
+      schema:
+        type: integer
+        example: 123
+  schemas:
+    Item:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        tax:
+          type: number
+      required:
+        - name
+        - price
+      type: object
+    HTTPNotFoundError:
+      properties:
+        detail:
+          type: string
+          example: Item exists
+      type: object
+    HTTPConflictError:
+      properties:
+        detail:
+          type: string
+          example: Item not found
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      title: HTTPValidationError
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            type: string
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      required:
+        - loc
+        - msg
+        - type
+      type: object
