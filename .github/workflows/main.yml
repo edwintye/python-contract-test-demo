@@ -42,8 +42,6 @@ jobs:
         run: |
           pytest -v --cov demo --cov-report xml:cov.xml --junitxml=pytest-junit.xml
 
-      # in conjunction with the 'on' trigger condition this will only run whenever main branch is involved
-      #        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -59,5 +57,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      # in conjunction with the 'on' trigger condition this will only run whenever main branch is involved
       - name: Contract test
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
         run: npm test
