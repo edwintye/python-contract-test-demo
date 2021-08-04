@@ -1,7 +1,8 @@
 import json
 from fastapi.testclient import TestClient
 
-from demo.main import app, delete_item
+from demo.main import app
+from demo.items import delete_item
 
 client = TestClient(app)
 
@@ -26,6 +27,7 @@ def test_put_item():
     }
     response = client.put("/items/1", data=json.dumps(data))
     assert response.status_code == 201
+
 
 async def delete_item_mock(item_id: int):
     return True
